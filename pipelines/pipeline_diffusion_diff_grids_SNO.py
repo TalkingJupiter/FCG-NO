@@ -29,6 +29,8 @@ from jax import config, random, grad, vmap, tree_map, tree_leaves, jit
 from jax.experimental import sparse as jsparse
 from scipy.interpolate import interpn
 
+from dotenv import load_dotenv
+
 config.update("jax_enable_x64", True)
 
 # %matplotlib inline
@@ -444,9 +446,13 @@ if __name__ == "__main__":
     parser.add_argument('--cuda', type=int, help='device cuda') # cuda
     args = parser.parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = str(args.cuda)
+
+    if not load_dotenv():
+        sys.exit("No .env found; Run from the repo root.")
     
     grids = [32, 64]
-    path = f'./Elliptic/SNO/diff_grid_'
+    path = f'{os.environ["RESULTS"]}/Elliptic/SNO/diff_grid_'
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     m_max = 20
     
     for grid in grids:

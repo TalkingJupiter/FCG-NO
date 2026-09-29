@@ -29,6 +29,8 @@ from jax import config, random, grad, vmap, pmap, tree_map, tree_leaves, jit
 from jax.experimental import sparse as jsparse
 from scipy.interpolate import interpn
 
+from dotenv import load_dotenv
+
 config.update("jax_enable_x64", True)
 
 @jit
@@ -433,8 +435,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = str(args.cuda)
     
+    if not load_dotenv():
+        sys.exit("No .env file found; run it from repo root")
+
     grids = [128]
-    path = f'./Poisson/SNO/diff_grid_'
+    path = f'{os.environ["RESULTS"]}/Poisson/SNO/diff_grid_'
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     m_max = 20
     
     for grid in grids:
